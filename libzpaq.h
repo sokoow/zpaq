@@ -31,7 +31,11 @@ from stdin to stdout (assuming binary I/O as in Linux):
   void libzpaq::error(const char* msg) {  // print message and exit
     fprintf(stderr, "Oops: %s\n", msg);
     //exit gracefully in order to make fuzzing usable
+#ifdef AFL_FUZZ
     exit(EXIT_SUCCESS);
+#else
+    exit(1);
+#endif
   }
 
   class In: public libzpaq::Reader {

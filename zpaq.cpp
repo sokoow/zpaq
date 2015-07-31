@@ -129,9 +129,14 @@ using libzpaq::StringBuffer;
 
 // Handle errors in libzpaq and elsewhere
 void libzpaq::error(const char* msg) {
+#ifdef AFL_FUZZ
   //exit gracefully in order to make fuzzing possible
   printf("\n%s\n\n",msg);
   exit(EXIT_SUCCESS);
+#else
+  if (strstr(msg, "ut of memory")) throw std::bad_alloc();
+  throw std::runtime_error(msg);
+#endif
 }
 using libzpaq::error;
 
